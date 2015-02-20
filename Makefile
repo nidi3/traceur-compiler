@@ -277,7 +277,7 @@ update-version-number: npm-publish updateSemver
 	$(MAKE) clean # sync to the npm version N after update
 	$(MAKE) test  # build version N+1
 
-git-update-version: # update-version-number
+git-update-version: update-version-number
 	cat build/npm-version-number | xargs -I VERSION git commit -a -m "VERSION"
 	cat build/npm-version-number | xargs -I VERSION git tag -a VERSION -m "Tagged version VERSION "
 	git push --tags upstream upstream_master:master
@@ -285,7 +285,7 @@ git-update-version: # update-version-number
 
 # master was updated with version N+1, npm to version N
 
-git-gh-rebase: git-update-version
+git-gh-rebase: # git-update-version
 	-git branch -D upstream_gh_pages
 	git checkout -b upstream_gh_pages upstream/master
 	cp gh-pages.gitignore .gitignore # tell git to commit built files.
