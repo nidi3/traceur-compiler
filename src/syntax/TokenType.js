@@ -122,3 +122,6 @@ export const VOID = 'void';
 export const WHILE = 'while';
 export const WITH = 'with';
 export const YIELD = 'yield';
+export const REQUIRE='require';
+export const ENSURE='ensure';
+export const INVARIANTS='invariants';

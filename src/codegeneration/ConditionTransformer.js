@@ -81,7 +81,7 @@ export class ConditionTransformer extends ParseTreeTransformer {
     this.moveRestArgumentsUp_(body, res);
 
     if (require) {
-      res.push(this.createCheckBlock('Precondition', require));
+      res.push(createBlock(this.createCheckStatements('Precondition', require)));
     }
     if (!ensure && !wasPma) {
       res.push(createBlock(body));
@@ -98,7 +98,7 @@ export class ConditionTransformer extends ParseTreeTransformer {
       res.push(assignResult);
 
       if (ensure) {
-        res.push(this.createCheckBlock('Postcondition', ensure));
+        res.push(createBlock(this.createCheckStatements('Postcondition', ensure)));
       }
 
       if (wasPma) {
@@ -118,7 +118,7 @@ export class ConditionTransformer extends ParseTreeTransformer {
     return res;
   }
 
-  createCheckBlock(name, statement) {
+  createCheckStatements(name, statement) {
     let checks = [];
     for (let arg of statement.args.args) {
       let writer = new ParseTreeWriter();
@@ -127,7 +127,7 @@ export class ConditionTransformer extends ParseTreeTransformer {
         createThrowStatement(createNewExpression(
           createIdentifierExpression('Error'), createArgumentList([createStringLiteral(name + ' violated: ' + writer.toString())])))));
     }
-    return createBlock(checks);
+    return checks;
   }
 }
 

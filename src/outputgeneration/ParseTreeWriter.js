@@ -91,7 +91,10 @@ import {
   TRY,
   WHILE,
   WITH,
-  YIELD
+  YIELD,
+  REQUIRE,
+  ENSURE,
+  INVARIANTS
 } from '../syntax/TokenType.js';
 
 const NEW_LINE = '\n';
@@ -1458,6 +1461,24 @@ export class ParseTreeWriter extends ParseTreeVisitor {
       this.writeSpace_();
       this.visitAny(tree.expression);
     }
+  }
+
+  visitRequireStatement(tree){
+    this.write_(REQUIRE);
+    this.visitAny(tree.args);
+    this.write_(SEMI_COLON);
+  }
+
+  visitEnsureStatement(tree){
+    this.write_(ENSURE);
+    this.visitAny(tree.args);
+    this.write_(SEMI_COLON);
+  }
+
+  visitInvariantsStatement(tree){
+    this.write_(INVARIANTS);
+    this.visitAny(tree.args);
+    this.write_(SEMI_COLON);
   }
 
   writeCurrentln_() {

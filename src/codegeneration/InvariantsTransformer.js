@@ -47,7 +47,6 @@ import {ConditionTransformer} from './ConditionTransformer.js';
 
 export class InvariantsTransformer extends ParseTreeTransformer {
 
-
   transformPropertyMethodAssignment(tree) {
     tree = super.transformPropertyMethodAssignment(tree);
     tree.body.wasPma = true;
@@ -56,7 +55,7 @@ export class InvariantsTransformer extends ParseTreeTransformer {
 
   transformInvariantsStatement(tree) {
     tree = new PropertyMethodAssignment(tree.location, false, null, createLiteralPropertyName('$invariants'), createEmptyParameterList(),
-      null, [], new ConditionTransformer().createCheckBlock('Invariant', tree), null);
+      null, [], createFunctionBody(new ConditionTransformer().createCheckStatements('Invariant', tree)), null);
     return tree;
   }
 }
