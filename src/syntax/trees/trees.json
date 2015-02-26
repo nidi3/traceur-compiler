@@ -172,6 +172,14 @@
       "ArgumentList"
     ]
   },
+  "InvariantsStatement": {
+    "location": [
+      "SourceRange"
+    ],
+    "args": [
+      "ArgumentList"
+    ]
+  },
   "CallSignature": {
     "location": [
       "SourceRange"

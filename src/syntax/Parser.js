@@ -37,7 +37,10 @@ import {
   GET,
   OF,
   ON,
-  SET
+  SET,
+  REQUIRE,
+  ENSURE,
+  INVARIANTS
 } from './PredefinedName.js';
 import {SyntaxErrorReporter} from '../util/SyntaxErrorReporter.js';
 import {Scanner} from './Scanner.js';
@@ -234,6 +237,7 @@ import {
   RestParameter,
   RequireStatement,
   EnsureStatement,
+  InvariantsStatement,
   ReturnStatement,
   Script,
   SetAccessor,
@@ -1106,11 +1110,11 @@ export class Parser {
 
     let result = this.parseStatementList_(!strictMode);
     var i=0;
-    if (this.isCall(result[i],'require')){
+    if (this.isCall(result[i],REQUIRE)){
       result[i]=new RequireStatement(result[i].location,result[i].expression.args);
       i++;
     }
-    if (this.isCall(result[i],'ensure')) {
+    if (this.isCall(result[i],ENSURE)) {
       result[i]=new EnsureStatement(result[i].location,result[i].expression.args);
     }
 
@@ -2274,6 +2278,12 @@ export class Parser {
         name.literalToken.value === SET &&
         this.peekPropertyName_(type)) {
       return this.parseSetAccessor_(start, isStatic, annotations);
+    }
+
+    if (name.type === LITERAL_PROPERTY_NAME &&
+        name.literalToken.value === INVARIANTS) {
+      let callExpr=this.parseCallExpression_(start, INVARIANTS);
+      return new InvariantsStatement(callExpr.location,callExpr.args);
     }
 
     if (this.options_.asyncFunctions &&

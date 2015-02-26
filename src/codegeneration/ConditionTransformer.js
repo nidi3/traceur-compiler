@@ -7,11 +7,13 @@ import {
   EnsureStatement,
   RequireStatement
   } from '../syntax/trees/ParseTrees.js';
+import{  FUNCTION_EXPRESSION,FOR_STATEMENT,ARRAY_LITERAL_EXPRESSION} from '../syntax/trees/ParseTreeType.js';
 import {
   createIfStatement,
   createThrowStatement,
   createNewExpression,
   createIdentifierExpression,
+  createIdentifierToken,
   createArgumentList,
   createBlock,
   createEmptyBlock,
@@ -28,27 +30,25 @@ import {
   createAssignmentStatement,
   createVariableDeclarationList,
   createVariableStatement,
-  createFunctionBody
+  createFunctionBody,
+  createBinaryExpression,
+  createMemberExpression,
+  createThisExpression,
+  createCallExpression,
+  createScopedExpression
   } from './ParseTreeFactory.js';
-import {  BANG,LET  } from '../syntax/TokenType.js';
+import {  BANG,LET,VAR,EQUAL_EQUAL_EQUAL,TYPEOF,AND  } from '../syntax/TokenType.js';
 import {  ParseTreeWriter  } from '../outputgeneration/ParseTreeWriter.js';
 import {ParseTreeTransformer} from './ParseTreeTransformer.js';
 
 export class ConditionTransformer extends ParseTreeTransformer {
-
-  transformArrowFunctionExpression(tree) {
-    if (tree.body.statements) {
-      tree.body.statements = this.createTargetStatements(...this.separateSourceStatements(tree.body.statements));
-    }
+  transformFunctionBody(tree) {
+    tree = super.transformFunctionBody(tree);
+    tree.statements = this.createTargetStatements_(tree.wasPma, ...this.separateSourceStatements_(tree.statements));
     return tree;
   }
 
-  transformFunctionDeclaration(tree) {
-    tree.body.statements = this.createTargetStatements(...this.separateSourceStatements(tree.body.statements));
-    return tree;
-  }
-
-  separateSourceStatements(statements) {
+  separateSourceStatements_(statements) {
     var require, ensure;
     let body = [];
     for (let st of statements) {
@@ -63,23 +63,62 @@ export class ConditionTransformer extends ParseTreeTransformer {
     return [require, ensure, body];
   }
 
-  createTargetStatements(require, ensure, body) {
-    let checkRequire = this.createCheckBlock('Precondition', require);
-    if (!ensure) {
-      return [checkRequire, createBlock(body)];
+  moveRestArgumentsUp_(body, res) {
+    let init = body[0].initializer;
+    if (body[0].type === FOR_STATEMENT && init && init.declarations.length === 2 &&
+      init.declarations[0].initializer.type === ARRAY_LITERAL_EXPRESSION && init.declarations[0].initializer.elements.length === 0) {
+      res.push(body[0]);
+      body.splice(0, 1);
     }
-    let callBody = createImmediatelyInvokedFunctionExpression(createFunctionBody(body)),
-      resultVar = createIdentifierExpression('$result'),
-      assignResult = createVariableStatement(createVariableDeclarationList(LET, resultVar, callBody)),
-      checkEnsure = this.createCheckBlock('Postcondition', ensure),
-      returnResult = createReturnStatement(resultVar);
-    return [checkRequire, assignResult, checkEnsure, returnResult];
+  }
+
+  createTargetStatements_(wasPma, require, ensure, body) {
+    if (body.length == 0) {
+      return body;
+    }
+
+    let res = [];
+    this.moveRestArgumentsUp_(body, res);
+
+    if (require) {
+      res.push(this.createCheckBlock('Precondition', require));
+    }
+    if (!ensure && !wasPma) {
+      res.push(createBlock(body));
+    } else {
+      let renamer = new ArgumentsRenamer(),
+        callBody = createScopedExpression(renamer.transformAny(createFunctionBody(body)), createThisExpression()),
+        resultVar = createIdentifierExpression('$result'),
+        assignResult = createVariableStatement(createVariableDeclarationList(VAR, resultVar, callBody));
+
+      if (renamer.hasChange) {
+        res.push(createVariableStatement(createVariableDeclarationList(VAR, createIdentifierExpression('$arguments'), createIdentifierExpression('arguments'))));
+      }
+
+      res.push(assignResult);
+
+      if (ensure) {
+        res.push(this.createCheckBlock('Postcondition', ensure));
+      }
+
+      if (wasPma) {
+        let thisInvariants = createMemberExpression(createThisExpression(), createIdentifierToken('$invariants')),
+          invariantsIsFunc = createBinaryExpression(
+            createUnaryExpression(createOperatorToken(TYPEOF), thisInvariants),
+            createOperatorToken(EQUAL_EQUAL_EQUAL),
+            createStringLiteral('function')),
+          shouldCallInvariants = createBinaryExpression(createThisExpression(), createOperatorToken(AND), invariantsIsFunc),
+          checkInvariants = createIfStatement(shouldCallInvariants, createCallStatement(thisInvariants));
+        res.push(checkInvariants);
+      }
+
+      res.push(createReturnStatement(resultVar));
+    }
+
+    return res;
   }
 
   createCheckBlock(name, statement) {
-    if (!statement) {
-      return createEmptyBlock();
-    }
     let checks = [];
     for (let arg of statement.args.args) {
       let writer = new ParseTreeWriter();
@@ -91,3 +130,39 @@ export class ConditionTransformer extends ParseTreeTransformer {
     return createBlock(checks);
   }
 }
+
+//TODO use AlphaRenamer
+class ArgumentsRenamer extends ParseTreeTransformer {
+  constructor() {
+    this.level = 0;
+    this.changed = false;
+  }
+
+  get hasChange() {
+    return this.changed;
+  }
+
+  transformFunctionBody(tree) {
+    this.level++;
+    tree = super.transformFunctionBody(tree);
+    this.level--;
+    return tree;
+  }
+
+  transformIdentifierExpression(tree) {
+    if (this.level == 1 && tree.identifierToken.value === 'arguments') {
+      tree = createIdentifierExpression('$arguments');
+      this.changed = true;
+    }
+    return tree;
+  }
+}
+
+//function max(a,b){
+//  if (max.invariants){
+//    let $result=(function(){
+//      return a>b?a:b;
+//    }());
+//
+//  }
+//}

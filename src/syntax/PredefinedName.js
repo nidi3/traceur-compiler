@@ -50,3 +50,6 @@ export const THIS = 'this';
 export const TRACEUR_RUNTIME = '$traceurRuntime';
 export const UNDEFINED = 'undefined';
 export const WRITABLE = 'writable';
+export const REQUIRE='require';
+export const ENSURE='ensure';
+export const INVARIANTS='invariants';

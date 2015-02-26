@@ -41,6 +41,7 @@ import {ObjectLiteralTransformer} from './ObjectLiteralTransformer.js';
 import {PropertyNameShorthandTransformer} from
     './PropertyNameShorthandTransformer.js';
 import {ConditionTransformer} from './ConditionTransformer.js';
+import {InvariantsTransformer} from './InvariantsTransformer.js';
 import {InstantiateModuleTransformer} from './InstantiateModuleTransformer.js';
 import {ProperTailCallTransformer} from './ProperTailCallTransformer.js';
 import {RegularExpressionTransformer} from './RegularExpressionTransformer.js';
@@ -88,8 +89,6 @@ export class FromOptionsTransformer extends MultiTransformer {
         return tree;
       });
     }
-
-    append(ConditionTransformer);
 
     // TODO: many of these simple, local transforms could happen in the same
     // tree pass
@@ -158,8 +157,10 @@ export class FromOptionsTransformer extends MultiTransformer {
       append(ArrowFunctionTransformer);
 
     // ClassTransformer needs to come before ObjectLiteralTransformer.
-    if (transformOptions.classes)
+    if (transformOptions.classes) {
+      append(InvariantsTransformer);
       append(ClassTransformer);
+    }
 
     if (transformOptions.propertyMethods ||
         transformOptions.computedPropertyNames ||
@@ -226,5 +227,8 @@ export class FromOptionsTransformer extends MultiTransformer {
     if (transformOptions.properTailCalls) {
       append(ProperTailCallTransformer);
     }
+
+    append(ConditionTransformer);
+
   }
 }
