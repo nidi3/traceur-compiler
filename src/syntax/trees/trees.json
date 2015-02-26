@@ -156,6 +156,22 @@
       "ArgumentList"
     ]
   },
+  "RequireStatement": {
+    "location": [
+      "SourceRange"
+    ],
+    "args": [
+      "ArgumentList"
+    ]
+  },
+  "EnsureStatement": {
+    "location": [
+      "SourceRange"
+    ],
+    "args": [
+      "ArgumentList"
+    ]
+  },
   "CallSignature": {
     "location": [
       "SourceRange"

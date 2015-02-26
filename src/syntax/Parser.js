@@ -232,6 +232,8 @@ import {
   PropertySignature,
   PropertyVariableDeclaration,
   RestParameter,
+  RequireStatement,
+  EnsureStatement,
   ReturnStatement,
   Script,
   SetAccessor,
@@ -1103,6 +1105,14 @@ export class Parser {
             functionKind.value === ASYNC || functionKind.value === ASYNC_STAR));
 
     let result = this.parseStatementList_(!strictMode);
+    var i=0;
+    if (this.isCall(result[i],'require')){
+      result[i]=new RequireStatement(result[i].location,result[i].expression.args);
+      i++;
+    }
+    if (this.isCall(result[i],'ensure')) {
+      result[i]=new EnsureStatement(result[i].location,result[i].expression.args);
+    }
 
     if (!strictMode && this.strictMode_ && params)
       StrictParams.visit(params, this.errorReporter_);
@@ -1114,6 +1124,11 @@ export class Parser {
 
     this.eat_(CLOSE_CURLY);
     return new FunctionBody(this.getTreeLocation_(start), result);
+  }
+
+  isCall(stat,name){
+    return stat instanceof ExpressionStatement && stat.expression instanceof CallExpression &&
+      stat.expression.operand instanceof IdentifierExpression && stat.expression.operand.identifierToken.value === name;
   }
 
   /**
