@@ -172,7 +172,7 @@
       "ArgumentList"
     ]
   },
-  "InvariantsStatement": {
+  "InvariantStatement": {
     "location": [
       "SourceRange"
     ],

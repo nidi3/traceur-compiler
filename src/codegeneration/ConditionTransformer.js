@@ -88,7 +88,7 @@ export class ConditionTransformer extends ParseTreeTransformer {
       res.push(createBlock(body));
     } else {
       let renamer = new ArgumentsRenamer(),
-        callBody = createScopedExpression(renamer.transformAny(createFunctionBody(body, 1)), createThisExpression()),
+        callBody = createScopedExpression(renamer.transformAny(createFunctionBody(body, 0)), createThisExpression()),
         resultVar = createIdentifierExpression('$result'),
         assignResult = createVariableStatement(createVariableDeclarationList(VAR, resultVar, callBody));
 

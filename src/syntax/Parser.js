@@ -41,7 +41,7 @@ import {
   PURE,
   REQUIRE,
   ENSURE,
-  INVARIANTS
+  INVARIANT
 } from './PredefinedName.js';
 import {SyntaxErrorReporter} from '../util/SyntaxErrorReporter.js';
 import {Scanner} from './Scanner.js';
@@ -238,7 +238,7 @@ import {
   RestParameter,
   RequireStatement,
   EnsureStatement,
-  InvariantsStatement,
+  InvariantStatement,
   ReturnStatement,
   Script,
   SetAccessor,
@@ -2301,9 +2301,9 @@ export class Parser {
     }
 
     if (name.type === LITERAL_PROPERTY_NAME &&
-        name.literalToken.value === INVARIANTS) {
-      let callExpr=this.parseCallExpression_(start, INVARIANTS);
-      return new InvariantsStatement(callExpr.location,callExpr.args);
+        name.literalToken.value === INVARIANT) {
+      let callExpr=this.parseCallExpression_(start, INVARIANT);
+      return new InvariantStatement(callExpr.location,callExpr.args);
     }
 
     if (this.options_.asyncFunctions &&

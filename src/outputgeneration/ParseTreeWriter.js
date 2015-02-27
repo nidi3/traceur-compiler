@@ -94,7 +94,7 @@ import {
   YIELD,
   REQUIRE,
   ENSURE,
-  INVARIANTS,
+  INVARIANT,
   PURE
 } from '../syntax/TokenType.js';
 
@@ -1484,8 +1484,8 @@ export class ParseTreeWriter extends ParseTreeVisitor {
     this.write_(SEMI_COLON);
   }
 
-  visitInvariantsStatement(tree){
-    this.write_(INVARIANTS);
+  visitInvariantStatement(tree){
+    this.write_(INVARIANT);
     this.visitAny(tree.args);
     this.write_(SEMI_COLON);
   }

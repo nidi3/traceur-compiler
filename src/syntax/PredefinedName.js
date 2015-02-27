@@ -52,5 +52,5 @@ export const UNDEFINED = 'undefined';
 export const WRITABLE = 'writable';
 export const REQUIRE='require';
 export const ENSURE='ensure';
-export const INVARIANTS='invariants';
+export const INVARIANT='invariant';
 export const PURE='pure';

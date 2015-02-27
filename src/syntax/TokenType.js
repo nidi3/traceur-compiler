@@ -124,5 +124,5 @@ export const WITH = 'with';
 export const YIELD = 'yield';
 export const REQUIRE='require';
 export const ENSURE='ensure';
-export const INVARIANTS='invariants';
+export const INVARIANT='invariant';
 export const PURE='pure';

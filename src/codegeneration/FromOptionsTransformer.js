@@ -229,8 +229,8 @@ export class FromOptionsTransformer extends MultiTransformer {
       append(ProperTailCallTransformer);
     }
 
-    append(PureTransformer);
     append(ConditionTransformer);
+    append(PureTransformer);
 
   }
 }

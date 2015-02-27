@@ -37,6 +37,7 @@ class FreeVariableChecker extends ScopeChainBuilderWithReferences {
     if (!this.scope.getBindingByName(name)) {
       let loc = tree.location;
       this.reporter.reportError(loc ? loc.start : '', `Free variable '${name}' is not allowed in pure function`);
+      //console.log('undef',loc ? loc.start : '',name)
     }
   }
 }

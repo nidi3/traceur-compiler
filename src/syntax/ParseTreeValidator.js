@@ -100,7 +100,7 @@ import {
   TYPE_PARAMETERS,
   VARIABLE_DECLARATION_LIST,
   VARIABLE_STATEMENT,
-  INVARIANTS_STATEMENT
+  INVARIANT_STATEMENT
 } from './trees/ParseTreeType.js';
 import {assert} from '../util/assert.js';
 
@@ -401,7 +401,7 @@ export class ParseTreeValidator extends ParseTreeVisitor {
         case SET_ACCESSOR:
         case PROPERTY_METHOD_ASSIGNMENT:
         case PROPERTY_VARIABLE_DECLARATION:
-        case INVARIANTS_STATEMENT:
+        case INVARIANT_STATEMENT:
           break;
         default:
           this.fail_(element, 'class element expected');
