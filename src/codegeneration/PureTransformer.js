@@ -1,13 +1,5 @@
-
-import{  FUNCTION_EXPRESSION,FOR_STATEMENT,ARRAY_LITERAL_EXPRESSION} from '../syntax/trees/ParseTreeType.js';
-import {  BANG,LET,VAR,EQUAL_EQUAL_EQUAL,TYPEOF,AND  } from '../syntax/TokenType.js';
-import {  ParseTreeWriter  } from '../outputgeneration/ParseTreeWriter.js';
 import {ParseTreeTransformer} from './ParseTreeTransformer.js';
-
-
 import {ScopeChainBuilderWithReferences} from '../semantics/ScopeChainBuilderWithReferences.js';
-import {ScopeChainBuilder} from '../semantics/ScopeChainBuilder.js';
-import {ScopeReferences} from '../semantics/ScopeReferences.js';
 import{THIS} from '../syntax/PredefinedName.js';
 
 class FreeVariableChecker extends ScopeChainBuilderWithReferences {
