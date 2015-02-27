@@ -544,6 +544,9 @@
     ],
     "statements": [
       "Array<ParseTree>"
+    ],
+    "pureness":[
+      "Pureness"
     ]
   },
   "//": "FunctionDeclaration and FunctionExpression needs to have the exact same shape",

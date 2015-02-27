@@ -38,6 +38,7 @@ import {
   OF,
   ON,
   SET,
+  PURE,
   REQUIRE,
   ENSURE,
   INVARIANTS
@@ -1095,6 +1096,8 @@ export class Parser {
    */
   parseFunctionBody_(functionKind, params) {
     let start = this.getTreeStartLocation_();
+    let pureness=this.parsePureness_();
+
     this.eat_(OPEN_CURLY);
 
     let allowYield = this.allowYield;
@@ -1127,7 +1130,24 @@ export class Parser {
     this.allowForOn = allowForOn;
 
     this.eat_(CLOSE_CURLY);
-    return new FunctionBody(this.getTreeLocation_(start), result);
+    return new FunctionBody(this.getTreeLocation_(start), result, pureness);
+  }
+
+  parsePureness_(){
+    var pureness=0;
+    let next=this.peekToken_();
+    if (next.type===IDENTIFIER && next.value===PURE){
+      pureness=2;
+      this.eat_(IDENTIFIER);
+      if (this.eatIf_(OPEN_PAREN)) {
+        if (this.peekType_()===THIS) {
+          pureness = 1;
+          this.eat_(THIS);
+        }
+        this.eat_(CLOSE_PAREN);
+      }
+    }
+    return pureness;
   }
 
   isCall(stat,name){
@@ -3338,7 +3358,8 @@ export class Parser {
   parseConciseBody_(asyncToken) {
     // The body can be a block or an expression. A '{' is always treated as
     // the beginning of a block.
-    if (this.peek_(OPEN_CURLY))
+    let next=this.peekToken_();
+    if (next.type===OPEN_CURLY || (next.type===IDENTIFIER && next.value===PURE))
       return this.parseFunctionBody_(asyncToken);
 
     let allowAwait = this.allowAwait;

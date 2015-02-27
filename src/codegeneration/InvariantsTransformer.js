@@ -55,7 +55,7 @@ export class InvariantsTransformer extends ParseTreeTransformer {
 
   transformInvariantsStatement(tree) {
     tree = new PropertyMethodAssignment(tree.location, false, null, createLiteralPropertyName('$invariants'), createEmptyParameterList(),
-      null, [], createFunctionBody(new ConditionTransformer().createCheckStatements('Invariant', tree)), null);
+      null, [], createFunctionBody(new ConditionTransformer().createCheckStatements('Invariant', tree), 1), null);
     return tree;
   }
 }

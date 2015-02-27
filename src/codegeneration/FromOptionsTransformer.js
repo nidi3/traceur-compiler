@@ -42,6 +42,7 @@ import {PropertyNameShorthandTransformer} from
     './PropertyNameShorthandTransformer.js';
 import {ConditionTransformer} from './ConditionTransformer.js';
 import {InvariantsTransformer} from './InvariantsTransformer.js';
+import {PureTransformer} from './PureTransformer.js';
 import {InstantiateModuleTransformer} from './InstantiateModuleTransformer.js';
 import {ProperTailCallTransformer} from './ProperTailCallTransformer.js';
 import {RegularExpressionTransformer} from './RegularExpressionTransformer.js';
@@ -228,6 +229,7 @@ export class FromOptionsTransformer extends MultiTransformer {
       append(ProperTailCallTransformer);
     }
 
+    append(PureTransformer);
     append(ConditionTransformer);
 
   }

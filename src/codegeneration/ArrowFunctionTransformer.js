@@ -29,7 +29,7 @@ import {
  */
 function convertConciseBody(tree) {
   if (tree.type !== FUNCTION_BODY)
-    return createFunctionBody([createReturnStatement(tree)]);
+    return createFunctionBody([createReturnStatement(tree)], 0);
   return tree;
 }
 

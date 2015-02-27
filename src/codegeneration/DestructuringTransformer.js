@@ -395,7 +395,7 @@ export class DestructuringTransformer extends TempVarTransformer {
     let list = createVariableDeclarationList(VAR, this.parameterDeclarations);
     let statement = createVariableStatement(list);
     let statements = prependStatements(tree.statements, statement);
-    let newBody = createFunctionBody(statements);
+    let newBody = createFunctionBody(statements,tree.pureness);
 
     this.parameterDeclarations = null;
 

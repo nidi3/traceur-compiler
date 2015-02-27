@@ -80,7 +80,7 @@ class HoistVariablesTransformer extends ParseTreeTransformer {
 
     statements = this.prependVariables(statements);
     statements = this.prependFunctions(statements);
-    return new FunctionBody(tree.location, statements);
+    return new FunctionBody(tree.location, statements,tree.pureness);
   }
 
   addVariable(name) {

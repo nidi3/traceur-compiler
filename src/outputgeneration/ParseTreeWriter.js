@@ -94,7 +94,8 @@ import {
   YIELD,
   REQUIRE,
   ENSURE,
-  INVARIANTS
+  INVARIANTS,
+  PURE
 } from '../syntax/TokenType.js';
 
 const NEW_LINE = '\n';
@@ -694,6 +695,14 @@ export class ParseTreeWriter extends ParseTreeVisitor {
    * @param {FunctionBody} tree
    */
   visitFunctionBody(tree) {
+    //if (tree.pureness>=1){
+    //  this.write_(PURE);
+    //  if (tree.pureness===1){
+    //    this.write_(OPEN_PAREN);
+    //    this.write_(THIS);
+    //    this.write_(CLOSE_PAREN);
+    //  }
+    //}
     this.writeOpenCurly_();
     this.writelnList_(tree.statements);
     this.writeCloseCurly_();

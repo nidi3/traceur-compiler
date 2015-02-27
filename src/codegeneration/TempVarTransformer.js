@@ -168,7 +168,7 @@ export class TempVarTransformer extends ParseTreeTransformer {
     this.popTempScope();
     if (statements === tree.statements)
       return tree;
-    return createFunctionBody(statements);
+    return createFunctionBody(statements,tree.pureness);
   }
 
   /**

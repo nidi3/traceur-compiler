@@ -428,7 +428,7 @@ export class ClassTransformer extends TempVarTransformer {
     this.popTempScope();
 
     if (superTransformer.nestedSuper)
-      return createFunctionBody([thisDecl].concat(transformedTree.statements));
+      return createFunctionBody([thisDecl].concat(transformedTree.statements),transformedTree.pureness);
     return transformedTree;
   }
 

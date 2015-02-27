@@ -42,6 +42,7 @@ import {  ParseTreeWriter  } from '../outputgeneration/ParseTreeWriter.js';
 import {ParseTreeTransformer} from './ParseTreeTransformer.js';
 
 export class ConditionTransformer extends ParseTreeTransformer {
+
   transformFunctionBody(tree) {
     tree = super.transformFunctionBody(tree);
     tree.statements = this.createTargetStatements_(tree.wasPma, ...this.separateSourceStatements_(tree.statements));
@@ -87,7 +88,7 @@ export class ConditionTransformer extends ParseTreeTransformer {
       res.push(createBlock(body));
     } else {
       let renamer = new ArgumentsRenamer(),
-        callBody = createScopedExpression(renamer.transformAny(createFunctionBody(body)), createThisExpression()),
+        callBody = createScopedExpression(renamer.transformAny(createFunctionBody(body, 1)), createThisExpression()),
         resultVar = createIdentifierExpression('$result'),
         assignResult = createVariableStatement(createVariableDeclarationList(VAR, resultVar, callBody));
 
@@ -158,11 +159,3 @@ class ArgumentsRenamer extends ParseTreeTransformer {
   }
 }
 
-//function max(a,b){
-//  if (max.invariants){
-//    let $result=(function(){
-//      return a>b?a:b;
-//    }());
-//
-//  }
-//}

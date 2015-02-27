@@ -279,7 +279,7 @@ export class BlockBindingTransformer extends ParseTreeTransformer {
       if (this.prependStatement_.length || this.blockRenames_.length) {
         let statements = prependStatements(tree.statements,
             ...this.prependStatement_);
-        tree = new FunctionBody(tree.location, statements);
+        tree = new FunctionBody(tree.location, statements,tree.pureness);
         tree = this.flushRenames(tree);
       }
     } else {
@@ -290,7 +290,7 @@ export class BlockBindingTransformer extends ParseTreeTransformer {
       if (functionBodyTree === tree) {
         return tree;
       }
-      tree = new FunctionBody(tree.location, functionBodyTree.statements);
+      tree = new FunctionBody(tree.location, functionBodyTree.statements,tree.pureness);
     }
     return tree;
   }

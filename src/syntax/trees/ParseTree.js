@@ -423,7 +423,7 @@ export class ParseTree {
         return this.literalToken.toString();
     }
 
-    throw new Error('Not yet implemented');
+    throw new Error('Not yet implemented: '+this.type);
 
   }
 

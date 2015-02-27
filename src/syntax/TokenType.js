@@ -125,3 +125,4 @@ export const YIELD = 'yield';
 export const REQUIRE='require';
 export const ENSURE='ensure';
 export const INVARIANTS='invariants';
+export const PURE='pure';

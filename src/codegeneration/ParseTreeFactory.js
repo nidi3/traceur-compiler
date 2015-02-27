@@ -232,8 +232,8 @@ export function createBlock(statements) {
  * @param {Array.<ParseTree>} statements
  * @return {FunctionBody}
  */
-export function createFunctionBody(statements) {
-  return new FunctionBody(null, statements);
+export function createFunctionBody(statements,pureness) {
+  return new FunctionBody(null, statements,pureness);
 }
 
 /**

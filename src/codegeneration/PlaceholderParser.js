@@ -292,7 +292,7 @@ export class PlaceholderTransformer extends ParseTreeTransformer {
       if (transformedStatement === tree.statements[0])
         return tree;
       if (transformedStatement.type === BLOCK)
-        return createFunctionBody(transformedStatement.statements);
+        return createFunctionBody(transformedStatement.statements,tree.pureness);
     }
     return super.transformFunctionBody(tree);
   }
